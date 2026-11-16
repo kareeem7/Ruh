@@ -5,18 +5,31 @@ Built as a portfolio / learning project — the whole store (cart, filters, auth
 
 > متجر أزياء مصري كامل شغال 100% على الفرونت إند — سلة، فلاتر، تسجيل دخول، دفع، لغتين، ودارك مود.
 
+**[Open the live store →](https://kareeem7.github.io/ruh-/)** · **[Open the admin panel →](https://kareeem7.github.io/ruh-/#/admin)** — PIN `2026`
+
 ---
 
 ## Preview
 
-Open `index.html` in your browser — that's it.
-No `npm install`, no build step, no server required (it also works from `file://`).
+Everything above is running from GitHub Pages right now. Locally it's the same folder —
+open `index.html` in your browser. No `npm install`, no build step, no server required
+(it also works from `file://`).
 
 ```bash
 # or serve it if you prefer
 npx serve .
 # then open http://localhost:3000
 ```
+
+### Try the admin panel
+
+The nicest thing to open first isn't the storefront — it's the back office:
+
+**`#/admin`** · PIN **`2026`** (also linked as *Admin* in the footer)
+
+Add a product there, save, then open `#/collection/all` — it's already in the grid,
+in search, in the filters, and it has its own product page. Nothing reloads, nothing
+is faked; the admin and the storefront are reading the same array.
 
 ---
 
@@ -61,7 +74,95 @@ The goal was: *"the store should feel real, but still be a single repo you can o
 - Currency switcher: EGP / SAR / AED / USD
 - Toasts for every action, skeleton loaders, focus-visible styles, Esc closes everything, `dataLayer` analytics events ready to wire (`view_item`, `add_to_cart`, `purchase`…)
 
+**Admin panel** — the part I'm most proud of. Full section below.
+- PIN-gated `#/admin` route with five live stat counters and a low-stock rail
+- Full product CRUD: create, edit any field, delete — with validation and Arabic error messages
+- What you add is merged into the catalog on boot and pushed to the UI with a re-render bump, so the storefront updates instantly
+- Orders from every checkout land in the admin table as they happen
+
 ---
+
+## Admin panel — لوحة الأدمن
+
+A storefront is easy to fake. A back office is where a real shop gets hard — inventory,
+editing, and "did my change actually reach the customer?" I wanted to build that part too,
+so the project stops being a pretty catalog and starts behaving like a shop.
+
+**Open `#/admin`** (or the **Admin** link in the footer) → PIN **`2026`**
+
+```text
+PIN: 2026        # ADMIN_PIN — authored in src/products.ts, built into js/products.js
+```
+
+### What's in it
+
+- **Six live stat counters** — catalog size, total stock units, orders, demo revenue, wishlist count
+- **Low-stock rail** — anything with ≤ 4 units left floats to the top, so it's the first thing you see
+- **Products table** — edit *any* product in place, including the original 24. Deleting is restricted to admin-created items on purpose: you shouldn't be able to wipe the seed catalog by accident
+- **Add / edit form** — bilingual names, category & section, price and old price, fabric, colour swatches pulled from the same design tokens the store uses, per-size stock, badge and fit note, two image URLs with a live preview
+- **Orders table** — every checkout lands here the moment it's placed, newest first
+
+### The bit that matters
+
+This is not a mockup with fake rows. The flow is real end to end:
+
+```text
+PIN gate → form → validation → AdminStore.productFromForm() → PRODUCTS array
+        → localStorage['ruh_admin_products'] → bumpProducts() → React re-render
+        → the new product is in the grid, the search, the filters, the "new" tab and its own page
+```
+
+`AdminStore.mergeAdminProducts(PRODUCTS)` runs on boot, so a product you added last week is
+still there after a refresh. `api.bumpProducts()` bumps a counter in the root component — the
+cheapest possible way to force a re-render without threading state through five layers.
+
+Validation is server-side honest about being client-side: name ≥ 2 chars, price > 0, at least
+one image, at least one colour, at least one size with stock — otherwise the save is refused
+with the missing fields named in Arabic.
+
+### Files
+
+| File | Role |
+|---|---|
+| `js/admin.js` | `AdminPage` — PIN gate, stats, form, both tables (~240 lines) |
+| `src/products.ts` → `js/products.js` | `AdminStore`: load, save, merge, slug, form → product, stats |
+| `src/types.ts` | the shapes — `Product`, `Order`, `AdminProductForm`, `AdminStats` |
+| `js/app.js` | one route line: `else if (route.name === 'admin') page = <AdminPage .../>` |
+| `js/hud.js` | the footer link |
+| `css/main.css` | `.astats`, `.atable`, `.bstk` … at the end of the file |
+
+**Read the limitation honestly:** the PIN is a UI gate, not security — anyone can run
+`sessionStorage.setItem('ruh_admin','1')` and walk in. That's fine while every byte of data
+lives in the visitor's own `localStorage`, and it's the first thing to move behind a real API
+(see [Known limitations](#known-limitations-on-purpose) and the roadmap).
+
+## TypeScript layer
+
+The product/admin logic is typed in `src/` and stays the source of truth:
+
+```text
+src/
+├── tsconfig.json     # strict, module:none, outDir → ../js
+├── types.ts          # Product, CartItem, Order, StoreUser, AdminProductForm, AdminStats
+└── products.ts       # AdminStore: load/save/merge/slugify/productFromForm/stats
+```
+
+Rebuild the runtime after touching `src/`:
+
+```bash
+npx tsc -p src        # writes js/products.js (+ js/types.js)
+```
+
+`js/products.js` is the committed build of `src/products.ts` — rebuilt and diffed against it,
+the two are identical apart from formatting (the committed copy is prettified: single quotes,
+2-space indent, and the `\u0600-\u06FF` range written as literal Arabic letters).
+
+Two things are deliberately inside the `.ts`, not appended to the `.js`, so a rebuild can't
+delete them: the `AdminStore.mergeAdminProducts(PRODUCTS)` boot call and `ADMIN_PIN`.
+If you keep `js/products.js` as the only source of truth you *will* lose both on the next
+build, and the admin panel stops opening — that's the reason `src/` exists.
+
+The rest of the runtime is JS — gradually portable the same way.
 
 ## Project Structure
 
@@ -171,52 +272,6 @@ if you'd rather generate your own.
   the site is one indexable URL. `sitemap.xml` reflects that instead of listing fragment URLs.
 
 ---
-
-## Admin dashboard — لوحة الأدمن
-
-Open `#/admin` (or the **Admin** footer link) and enter the demo PIN:
-
-```text
-PIN: 2026        # ADMIN_PIN, authored in src/products.ts → built into js/products.js
-```
-
-What it does, right now, client-side:
-
-- **Stats counters** — catalog size, total stock units, orders, demo revenue, wishlist count
-- **Low-stock alert rail** — anything with ≤ 4 units floats to the top
-- **Products table** — edit *any* product inline; delete/restore applies to admin-added items (the base 24 are protected on purpose)
-- **Add product form** — bilingual names, category/section, prices, fabric, color swatches picked from the design system, per-size stock, badge & fit notes, image URLs with live preview
-- **Orders table** — every checkout lands here instantly
-
-Products you add are persisted to `localStorage['ruh_admin_products']`, merged into the catalog on boot (`AdminStore.mergeAdminProducts`) and pushed live with a re-render bump — so yes, **what you add shows up in the store immediately** (collection grid, search, tabs with `badge:'new'`, PDP).
-
-## TypeScript layer
-
-The product/admin logic is typed in `src/` and stays the source of truth:
-
-```text
-src/
-├── tsconfig.json     # strict, module:none, outDir → ../js
-├── types.ts          # Product, CartItem, Order, StoreUser, AdminProductForm, AdminStats
-└── products.ts       # AdminStore: load/save/merge/slugify/productFromForm/stats
-```
-
-Rebuild the runtime after touching `src/`:
-
-```bash
-npx tsc -p src        # writes js/products.js (+ js/types.js)
-```
-
-`js/products.js` is the committed build of `src/products.ts` — rebuilt and diffed against it,
-the two are identical apart from formatting (the committed copy is prettified: single quotes,
-2-space indent, and the `\u0600-\u06FF` range written as literal Arabic letters).
-
-Two things are deliberately inside the `.ts`, not appended to the `.js`, so a rebuild can't
-delete them: the `AdminStore.mergeAdminProducts(PRODUCTS)` boot call and `ADMIN_PIN`.
-If you keep `js/products.js` as the only source of truth you *will* lose both on the next
-build, and the admin panel stops opening — that's the reason `src/` exists.
-
-The rest of the runtime is JS — gradually portable the same way.
 
 ## Roadmap / next improvements
 
