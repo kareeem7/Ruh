@@ -1,38 +1,21 @@
-# RŪH — fashion e-commerce store (متجر روح)
+# RŪH — Fashion E-commerce Store — متجر روح
 
-A front-end store for a made-up Cairo clothing brand. Cart, filters, search, wishlist,
-3-step checkout, accounts, Arabic/English with RTL, dark mode and a currency switcher —
-all client-side, no backend.
+A fully working fashion e-commerce front-end for a made-up Cairo brand called **RŪH (روح)**.
+Built as a portfolio / learning project — the whole store (cart, filters, auth, checkout, i18n…) runs client-side, no backend.
 
-**[Open the live store →](https://kareeem7.github.io/ruh-/)**
+> متجر أزياء مصري كامل شغال 100% على الفرونت إند — سلة، فلاتر، تسجيل دخول، دفع، لغتين، ودارك مود.
 
-It runs on React 18 through the UMD build plus `htm` for markup, so there's no bundler and
-no build step: the whole thing is a folder you can open with a double click.
+---
 
-## What's in it
+## Preview
 
-- 24 products over home, collection and product pages; filters by size, colour, price, fabric,
-  rating and stock; five sort orders
-- Cart drawer with quantity steps, a working coupon (`ROOH10`), free-shipping progress and
-  bundle discounts
-- 3-step checkout with six payment methods (COD, card, Fawry, ValU, InstaPay, Apple Pay)
-- Demo accounts: salted SHA-256 via Web Crypto, order history, saved address
-- Arabic-first design decisions — RTL flip, Arabic validation messages, IBM Plex Sans Arabic
-
-## Screenshots
-
-<!-- ضيف ٣ صور هنا: home / collection / product. سحب الصور لـ assets/screens/ وسمّيها بنفس الأسماء -->
-| Home | Collection | Product |
-|---|---|---|
-| _home.png_ | _collection.png_ | _product.png_ |
-
-## Run it
-
-Open `index.html`. That's it — no `npm install`, no server, works from `file://`.
-If you want a hosted-style run (needed for clean URLs):
+Open `index.html` in your browser — that's it.
+No `npm install`, no build step, no server required (it also works from `file://`).
 
 ```bash
+# or serve it if you prefer
 npx serve .
+# then open http://localhost:3000
 ```
 
 ---
@@ -88,19 +71,27 @@ The goal was: *"the store should feel real, but still be a single repo you can o
 ├── robots.txt / sitemap.xml   # SEO basics
 ├── css/
 │   └── main.css               # design tokens + every component (no framework overrides)
-└── js/
-    ├── data.js                # 24 products, reviews, posts, FAQ, translations ← the "API"
-    ├── utils.js               # helpers: storage, money fmt, router parse, icons, hash auth
-    ├── components.js          # shared UI: Modal, Drawer, Toasts, ProductCard, FABs…
-    ├── hud.js                 # Header, Mega menu, Cart drawer, Search overlay, Footer
-    ├── pages-shop.js          # Home, Collection, Product, Wishlist, Compare
-    ├── pages-plus.js          # Blog, Article, Policies, Order, Account
-    ├── pages-auth-checkout.js # Auth (login/signup/reset) + 3-step Checkout
-    └── app.js                 # root state, hash router, popups scheduler
+├── js/
+│   ├── data.js                # 24 products, reviews, posts, FAQ, translations ← the "API"
+│   ├── products.js            # AdminStore — build output of src/products.ts (see below)
+│   ├── utils.js               # helpers: storage, money fmt, router parse, icons, hash auth
+│   ├── components.js          # shared UI: Modal, Drawer, Toasts, ProductCard, FABs…
+│   ├── hud.js                 # Header, Mega menu, Cart drawer, Search overlay, Footer
+│   ├── pages-shop.js          # Home, Collection, Product, Wishlist, Compare
+│   ├── pages-plus.js          # Blog, Article, Policies, Order, Account
+│   ├── pages-auth-checkout.js # Auth (login/signup/reset) + 3-step Checkout
+│   ├── admin.js               # AdminPage: PIN gate, stats, product form, tables
+│   └── app.js                 # root state, hash router, popups scheduler
+└── src/                       # typed source for the product/admin layer only
+    ├── tsconfig.json          # strict, module:none, outDir → ../js
+    ├── types.ts               # shared interfaces (Product, Order, AdminProductForm…)
+    └── products.ts            # AdminStore + boot merge
 ```
 
-No `src/`, no bundler. The philosophy: folders by *layer*, components by *screen*.
-It's not perfect architecture — but it's honest, readable, and every file has one job.
+No bundler anywhere: `index.html` loads plain `<script>` tags and `file://` still works.
+The philosophy is folders by *layer*, components by *screen*. Only the product/admin layer
+has a typed source (`src/`); the rest of the runtime is JS and gets ported the same way,
+one file at a time.
 
 ---
 
@@ -170,20 +161,70 @@ if you'd rather generate your own.
   real auth API (and keep the UI as-is).
 - Payments are mocked (no gateway calls) — integration points are marked in the checkout handlers.
 - Product photos are same-per-category hot-links, so a real catalog would need its own photography.
-- `sitemap.xml` lists relative URLs and hash routes (`#/collection/all`), which search engines
-  don't index properly. A real deployment needs a server that rewrites routes to real paths.
-- If `crypto.subtle` isn't available (older browser or non-HTTPS), password hashing falls back
-  to a weak non-cryptographic hash. Demo-only, same as the rest of the auth.
+- **If `crypto.subtle` is unavailable** (older browser, or any non-HTTPS context) the password
+  hash falls back to a weaker non-cryptographic function. Same demo-grade caveat as the rest of auth.
+- **The admin PIN is not security.** Checking it in the browser means anyone can open devtools,
+  run `sessionStorage.setItem('ruh_admin','1')` and walk in. It gates a UI, not data — everything
+  lives in `localStorage` on the visitor's own machine, so there is nothing to protect yet. A real
+  deployment moves the check to a server and the panel behind real auth.
+- Deep links are hash routes (`#/product/x`), which crawlers don't index as separate pages, so
+  the site is one indexable URL. `sitemap.xml` reflects that instead of listing fragment URLs.
 
 ---
+
+## Admin dashboard — لوحة الأدمن
+
+Open `#/admin` (or the **Admin** footer link) and enter the demo PIN:
+
+```text
+PIN: 2026        # ADMIN_PIN, authored in src/products.ts → built into js/products.js
+```
+
+What it does, right now, client-side:
+
+- **Stats counters** — catalog size, total stock units, orders, demo revenue, wishlist count
+- **Low-stock alert rail** — anything with ≤ 4 units floats to the top
+- **Products table** — edit *any* product inline; delete/restore applies to admin-added items (the base 24 are protected on purpose)
+- **Add product form** — bilingual names, category/section, prices, fabric, color swatches picked from the design system, per-size stock, badge & fit notes, image URLs with live preview
+- **Orders table** — every checkout lands here instantly
+
+Products you add are persisted to `localStorage['ruh_admin_products']`, merged into the catalog on boot (`AdminStore.mergeAdminProducts`) and pushed live with a re-render bump — so yes, **what you add shows up in the store immediately** (collection grid, search, tabs with `badge:'new'`, PDP).
+
+## TypeScript layer
+
+The product/admin logic is typed in `src/` and stays the source of truth:
+
+```text
+src/
+├── tsconfig.json     # strict, module:none, outDir → ../js
+├── types.ts          # Product, CartItem, Order, StoreUser, AdminProductForm, AdminStats
+└── products.ts       # AdminStore: load/save/merge/slugify/productFromForm/stats
+```
+
+Rebuild the runtime after touching `src/`:
+
+```bash
+npx tsc -p src        # writes js/products.js (+ js/types.js)
+```
+
+`js/products.js` is the committed build of `src/products.ts` — rebuilt and diffed against it,
+the two are identical apart from formatting (the committed copy is prettified: single quotes,
+2-space indent, and the `\u0600-\u06FF` range written as literal Arabic letters).
+
+Two things are deliberately inside the `.ts`, not appended to the `.js`, so a rebuild can't
+delete them: the `AdminStore.mergeAdminProducts(PRODUCTS)` boot call and `ADMIN_PIN`.
+If you keep `js/products.js` as the only source of truth you *will* lose both on the next
+build, and the admin panel stops opening — that's the reason `src/` exists.
+
+The rest of the runtime is JS — gradually portable the same way.
 
 ## Roadmap / next improvements
 
 - [ ] React Router + code-splitting (currently lightweight hash routing on purpose)
-- [ ] Real backend: auth API + orders + inventory webhooks
+- [ ] Move the rest of `js/` to `src/` TypeScript module-by-module
+- [ ] Real backend: auth API + orders + inventory webhooks — admin PIN becomes real RBAC
 - [ ] Meta / TikTok Pixel wiring (events already push to `dataLayer`)
 - [ ] PWA: service worker + offline shell
-- [ ] Admin dashboard for products & coupons
 
 ---
 
