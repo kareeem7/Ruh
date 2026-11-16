@@ -1,21 +1,38 @@
-# RŪH — Fashion E-commerce Store — متجر روح
+# RŪH — fashion e-commerce store (متجر روح)
 
-A fully working fashion e-commerce front-end for a made-up Cairo brand called **RŪH (روح)**.
-Built as a portfolio / learning project — the whole store (cart, filters, auth, checkout, i18n…) runs client-side, no backend.
+A front-end store for a made-up Cairo clothing brand. Cart, filters, search, wishlist,
+3-step checkout, accounts, Arabic/English with RTL, dark mode and a currency switcher —
+all client-side, no backend.
 
-> متجر أزياء مصري كامل شغال 100% على الفرونت إند — سلة، فلاتر، تسجيل دخول، دفع، لغتين، ودارك مود.
+**[Open the live store →](https://kareeem7.github.io/ruh-/)**
 
----
+It runs on React 18 through the UMD build plus `htm` for markup, so there's no bundler and
+no build step: the whole thing is a folder you can open with a double click.
 
-## Preview
+## What's in it
 
-Open `index.html` in your browser — that's it.
-No `npm install`, no build step, no server required (it also works from `file://`).
+- 24 products over home, collection and product pages; filters by size, colour, price, fabric,
+  rating and stock; five sort orders
+- Cart drawer with quantity steps, a working coupon (`ROOH10`), free-shipping progress and
+  bundle discounts
+- 3-step checkout with six payment methods (COD, card, Fawry, ValU, InstaPay, Apple Pay)
+- Demo accounts: salted SHA-256 via Web Crypto, order history, saved address
+- Arabic-first design decisions — RTL flip, Arabic validation messages, IBM Plex Sans Arabic
+
+## Screenshots
+
+<!-- ضيف ٣ صور هنا: home / collection / product. سحب الصور لـ assets/screens/ وسمّيها بنفس الأسماء -->
+| Home | Collection | Product |
+|---|---|---|
+| _home.png_ | _collection.png_ | _product.png_ |
+
+## Run it
+
+Open `index.html`. That's it — no `npm install`, no server, works from `file://`.
+If you want a hosted-style run (needed for clean URLs):
 
 ```bash
-# or serve it if you prefer
 npx serve .
-# then open http://localhost:3000
 ```
 
 ---
@@ -153,6 +170,10 @@ if you'd rather generate your own.
   real auth API (and keep the UI as-is).
 - Payments are mocked (no gateway calls) — integration points are marked in the checkout handlers.
 - Product photos are same-per-category hot-links, so a real catalog would need its own photography.
+- `sitemap.xml` lists relative URLs and hash routes (`#/collection/all`), which search engines
+  don't index properly. A real deployment needs a server that rewrites routes to real paths.
+- If `crypto.subtle` isn't available (older browser or non-HTTPS), password hashing falls back
+  to a weak non-cryptographic hash. Demo-only, same as the rest of the auth.
 
 ---
 
