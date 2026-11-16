@@ -266,6 +266,7 @@ function Footer({ api }){
         <button onClick=${() => api.setModal('sizeguide')}>${t('szGuide')}</button>
         <a href="#/page/shipping">${l === 'ar' ? 'الشحن والتوصيل' : 'Shipping'}</a>
         <a href="#/page/returns">${l === 'ar' ? 'الاستبدال والاسترجاع' : 'Returns'}</a>
+        <a href="#/admin">Admin</a>
       </div></nav>
       <div><h3>${t('contactT')}</h3><div className="ft__links">
         <a href=${CFG.wa} target="_blank" rel="noopener"><${Icon} n="chat" size=${17}/>WhatsApp</a>
