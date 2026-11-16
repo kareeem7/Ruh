@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Only real, crawlable URLs belong in a sitemap.
+
+  The old version listed "./index.html" and eight fragment URLs
+  ("./index.html#/collection/all" ...). Both are broken:
+    1. Relative <loc> is invalid — the spec requires an absolute URL.
+    2. A "#fragment" is not a separate page to a crawler. Google strips it,
+       so all nine entries pointed at the same URL.
+
+  There is exactly one page here, so there is exactly one entry.
+  If the repo is renamed (ruh- -> ruh), update <loc> in this file and the
+  Sitemap: line in robots.txt.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>./index.html</loc><priority>1.0</priority></url>
-  <url><loc>./index.html#/collection/all</loc><priority>0.9</priority></url>
-  <url><loc>./index.html#/collection/women</loc><priority>0.8</priority></url>
-  <url><loc>./index.html#/collection/men</loc><priority>0.8</priority></url>
-  <url><loc>./index.html#/blog</loc><priority>0.6</priority></url>
-  <url><loc>./index.html#/page/shipping</loc><priority>0.4</priority></url>
-  <url><loc>./index.html#/page/returns</loc><priority>0.4</priority></url>
-  <url><loc>./index.html#/page/privacy</loc><priority>0.3</priority></url>
+  <url>
+    <loc>https://kareeem7.github.io/ruh-/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
 </urlset>
