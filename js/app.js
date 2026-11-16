@@ -20,6 +20,7 @@ function App(){
   const [modal, setModal] = useState(null);   // sizeguide | suggest | track
   const [qv, setQv] = useState(null);         // منتج للكويك فيو
   const [lb, setLb] = useState(null);         // { imgs:[], i }
+  const [prodTick, setProdTick] = useState(0); // بيجبر ريندر لما الأدمن يضيف/يعدّل منتج
   const [scrolled40, setScrolled40] = useState(false);
 
   const lang = prefs.lang || 'en';
@@ -159,8 +160,10 @@ function App(){
     addOrder: o => { setOrders(list => [...list, o]); LS.set('ruh_last_order', o); },
     goBack: () => { const lr = LS.get('ruh_last_route', '#/'); go(lr || '#/'); },
     go: path => go(path),
-    getTotals: () => cartTotals(cart, coupon)
+    getTotals: () => cartTotals(cart, coupon),
+    bumpProducts: () => setProdTick(v => v + 1)
   };
+  void prodTick; // القيمة نفسها مش بنستخدمها — التغيير هو اللي بيرندر
   // helper صغير عشان addBundle (مش هنكرر الكود)
   function Ui_openCart(){ setUi(u => ({ ...u, cart: true })); }
 
@@ -202,6 +205,7 @@ function App(){
   else if (route.name === 'order') page = html`<${OrderPage} api=${api}/>`;
   else if (route.name === 'auth') page = html`<${AuthPage} api=${api}/>`;
   else if (route.name === 'account') page = html`<${AccountPage} api=${api}/>`;
+  else if (route.name === 'admin') page = html`<${AdminPage} api=${api}/>`;
   else if (route.name === 'page') page = html`<${ContentPage} api=${api}/>`;
   else page = html`<${NotFound} api=${api}/>`;
 
