@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "none",
+    "strict": true,
+    "rootDir": ".",
+    "outDir": "../js",
+    "skipLibCheck": true,
+    "noEmitOnError": true
+  },
+  "include": ["types.ts", "products.ts"],
+  "_notes": "npx tsc -p src   →   emits js/types.js + js/products.js (admin runtime uses these globals)"
+}
