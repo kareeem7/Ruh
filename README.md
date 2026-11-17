@@ -5,7 +5,7 @@ Built as a portfolio / learning project — the whole store (cart, filters, auth
 
 > متجر أزياء مصري كامل شغال 100% على الفرونت إند — سلة، فلاتر، تسجيل دخول، دفع، لغتين، ودارك مود.
 
-**[Open the live store →](https://kareeem7.github.io/ruh-/)** · **[Open the admin panel →](https://kareeem7.github.io/ruh-/#/admin)** — PIN `2026`
+**[Open the live store →](https://kareeem7.github.io/Ruh/)** · **[Open the admin panel →](https://kareeem7.github.io/Ruh/#/admin)** — PIN `2026`
 
 ---
 
