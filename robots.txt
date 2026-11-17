@@ -1,6 +1,1 @@
-User-agent: *
-Allow: /
-
-# Absolute URL is required here — "Sitemap: ./sitemap.xml" is ignored by every crawler.
-# If the repo gets renamed, this line and the sitemap's <loc> need the new name.
-Sitemap: https://kareeem7.github.io/ruh-/sitemap.xml
+test
