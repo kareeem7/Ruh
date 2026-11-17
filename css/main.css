@@ -788,6 +788,35 @@ html{scrollbar-color:var(--clay) var(--soft);scrollbar-width:thin}
 @media (max-width:1200px){.astats{grid-template-columns:repeat(3,1fr)}.agrid{grid-template-columns:1fr}}
 @media (max-width:768px){.astats{grid-template-columns:1fr 1fr}}
 
+/* ---- تنسيق فورم الأدمن: أقسام مرقّمة + تبويب مريح على الموبايل ---- */
+.admTabs{display:none;gap:6px;margin-bottom:14px}
+.admTab{width:38px;height:38px;border-radius:var(--r-sm);border:1.5px solid var(--line);font-weight:700;font-size:14px;color:var(--muted);transition:all var(--dur)}
+.admTab.on{background:linear-gradient(135deg,#E8430A,#C23300);border-color:transparent;color:#FFF6EE;box-shadow:var(--glow)}
+.adm-sec{border-top:1px dashed var(--line);padding-top:16px;margin-top:16px}
+.adm-sec:first-of-type{border-top:0;padding-top:4px;margin-top:6px}
+.adm-sec h3{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:700;color:var(--ink);margin:0 0 14px;letter-spacing:.01em}
+.adm-sec h3 .n{width:24px;height:24px;flex:none;border-radius:50%;background:linear-gradient(135deg,#E8430A,#C23300);color:#FFF6EE;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(241,78,14,.3)}
+.admg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.adm-sec .fld input,.adm-sec .fld select,.adm-sec .fld textarea{width:100%}
+.adm-form{order:2}
+.adm-list{order:1}
+@media (max-width:991px){
+  .agrid{grid-template-columns:1fr}
+  .adm-form{order:1}
+  .adm-list{order:0}
+}
+@media (max-width:768px){
+  .admTabs{display:flex}
+  .adm-sec{display:none;border-top:1px dashed var(--line);padding-top:16px;margin-top:16px}
+  .adm-sec.on{display:block}
+  .adm-sec.on:first-of-type{border-top:0}
+  .admg{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:480px){
+  .admg{grid-template-columns:repeat(2,1fr)}
+  .admTab{width:44px;height:44px}
+}
+
 /* ============================================================
    Mobile audit fixes — مراجعة الشاشات الصغيرة (360 → 480 → 768)
 ============================================================ */
