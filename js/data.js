@@ -170,6 +170,47 @@ const PAGES = {
 };
 const TRENDING = ['لينن linen','قميص shirt','فستان dress','بلوفر knit','بليزر blazer','وشاح scarf'];
 
+/* ترجمات لوحة الأدمن (مفصولة عن I18N الرئيسي عشان يفضل منظّم) */
+const ADMIN_I18N = {
+ ar:{
+  title:'لوحة الأدمن', sub:'متابعة المتجر كله من مكان واحد — وأي منتج تضيفه يظهر في المتجر فورًا.',
+  openStore:'افتح المتجر', logout:'خروج', pinH:'لوحة الأدمن', pinHint:'ديمو: الـ PIN هو', pinLb:'PIN', enter:'دخول', back:'رجوع للمتجر', pinBad:'الـ PIN مش مظبوط',
+  catalog:'منتج في الكاتالوج', stockUnits:'إجمالي القطع في المخزون', ordersN:'طلبات على الجهاز ده', rev:'إجمالي المبيعات (ديمو)',
+  wishN:'في المفضلة', adminN:'منتجات ضفتها من هنا', low:'مخزون قليل — جدد قبل ما يخلص',
+  newP:'ضيف منتج جديد', editP:n=>'تعديل منتج #' + n, cancel:'إلغاء', saveNew:'ضيف المنتج للمتجر', saveEdit:'احفظ التعديل',
+  s1:'١ — الأسماء والقسم', s2:'٢ — التسعير والخامة', s3:'٣ — الصور', s4:'٤ — المميزات والألوان', s5:'٥ — المخزون لكل مقاس', s6:'٦ — الوصف والعناية',
+  nameAr:'الاسم بالعربي', nameEn:'الاسم بالإنجليزي', cat:'القسم', sub:'التصنيف الفرعي', price:'السعر (ج.م)', old:'سعر قبل الخصم (اختياري)',
+  fabricAr:'الخامة', fabricEn:'Fabric (EN)', img1:'رابط الصورة الأساسية *', img2:'صورة الهوفر (اختياري)', badge:'البادج', fit:'ملاحظة المقاس',
+  badgeNone:'بدون', badgeNew:'جديد — New', badgeSale:'عرض/خصم', fitN:'عادي', fitS:'صغير — خد أكبر', fitL:'واسع — خد أصغر',
+  colors:'الألوان (اختار من سواتش الستايل)', stockLb:'المخزون لكل مقاس (صفر = يختفي)', descAr:'الوصف (عربي)', descEn:'Description (EN)', careAr:'تعليمات العناية',
+  preview:'معاينة', missing:n=>'ناقص: ' + n, saved:'اتحفظ — هيظهر في المتجر فورًا', savedLink:'شوفه هنا: الكولكشن', del:'امسح', confirmDel:'متأكد؟ امسح', no:'لا',
+  baseTag:'أساسي', admTag:'أدمن', prot:'المنتجات «الأساسية» الـ 24 بتتعدّل وتظهر فورًا، بس المسح متاح للي ضفته من اللوحة بس.',
+  prodsT:n=>'المنتجات (' + n + ')', hProd:'الاسم', hPrice:'السعر', hStock:'مخزون', hBadge:'بادج', hAct:'إجراءات',
+  ordersT:n=>'الطلبات (' + n + ')', oNum:'رقم', oDate:'التاريخ', oTotal:'الإجمالي', oShip:'الشحن', oPay:'الدفع', oItems:'قطع',
+  noOrders:'لسه مفيش طلبات — اعمل طلب تجريبي من المتجر وهيظهر هنا.', colP:'منتج', colS:'قطعة',
+  delTo:'اتمسح من المتجر', req:'اسم عربي • سعر • صورة • لون • مقاس • مخزون', numPh:'1490', urlPh:'https://…', subPh:'قمصان',
+  prdNamePh:'قميص كتان – عاجي', prdNameEnPh:'Linen Shirt – Ivory', fabricPh:'كتان 100%', fabricEnPh:'100% linen', dash:'—'
+ },
+ en:{
+  title:'Admin dashboard', sub:'One place to watch everything — anything you add appears in the store instantly.',
+  openStore:'Open store', logout:'Sign out', pinH:'Admin dashboard', pinHint:'Demo PIN:', pinLb:'PIN', enter:'Enter', back:'← Back to store', pinBad:'Wrong PIN',
+  catalog:'products in catalog', stockUnits:'units in stock', ordersN:'orders on this device', rev:'total revenue (demo)',
+  wishN:'in wishlist', adminN:'added from here', low:'Low stock — restock soon',
+  newP:'Add new product', editP:n=>'Edit product #' + n, cancel:'Cancel', saveNew:'Add to store', saveEdit:'Save changes',
+  s1:'1 — Names & category', s2:'2 — Pricing & fabric', s3:'3 — Images', s4:'4 — Options & colors', s5:'5 — Stock per size', s6:'6 — Description & care',
+  nameAr:'Name (Arabic)', nameEn:'Name (English)', cat:'Category', sub:'Sub-category', price:'Price (EGP)', old:'Old price (optional)',
+  fabricAr:'Fabric', fabricEn:'Fabric (EN)', img1:'Main image URL *', img2:'Hover image (optional)', badge:'Badge', fit:'Fit note',
+  badgeNone:'None', badgeNew:'New', badgeSale:'Sale', fitN:'Regular', fitS:'Runs small', fitL:'Runs large',
+  colors:'Colors (from the design system)', stockLb:'Stock per size (0 = hidden)', descAr:'Description (AR)', descEn:'Description (EN)', careAr:'Care instructions',
+  preview:'Preview', missing:n=>'Missing: ' + n, saved:'Saved — it is live in the store now', savedLink:'See it: Collection', del:'Delete', confirmDel:'Sure? Delete', no:'No',
+  baseTag:'Base', admTag:'Admin', prot:'The base 24 can be edited and are live instantly; deletion is only allowed on items you add here.',
+  prodsT:n=>'Products (' + n + ')', hProd:'Product', hPrice:'Price', hStock:'Stock', hBadge:'Badge', hAct:'Actions',
+  ordersT:n=>'Orders (' + n + ')', oNum:'No.', oDate:'Date', oTotal:'Total', oShip:'Shipping', oPay:'Payment', oItems:'Items',
+  noOrders:'No orders yet — run a demo checkout and it shows up here.', colP:'products', colS:'items',
+  delTo:'Removed from the store', req:'Arabic name • price • image • color • size • stock', numPh:'1490', urlPh:'https://…', subPh:'Shirts',
+  prdNamePh:'Wide Linen Shirt – Ivory', prdNameEnPh:'Wide Linen Shirt – Ivory', fabricPh:'100% linen', fabricEnPh:'100% linen', dash:'—'
+ }};
+
 /* الترجمات */
 const I18N = {
  ar:{ shop:'تسوق', sale:'عليه عرض', blog:'المدونة',
